@@ -1,33 +1,152 @@
 const express = require("express");
-const mongoose = require("mongoose");
+
+const authRoutes = require("./routes/auth");
+
 const app = express();
+
 app.use(express.json());
-const { email, password } = req.body;
+app.use(express.urlencoded({ extended: true }));
 
-    const user = users.find(
-      (user) =>
-        user.email === email &&
-        user.password === password
-    );
+// Authentication routes
+app.use("/api/auth", authRoutes);
 
-    if (!user) {
-      return res.status(401).json({
-        message: "Invalid email or password"
-      });
-    }
 
-    res.json({
-      message: "Login successful",
-      user: {
-        name: user.name,
-        email: user.email
-      }
-    });
-
+// Home Page
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send(`
+    <h1>Authentication System</h1>
+
+    <a href="/register">Register</a>
+
+    <br><br>
+
+    <a href="/login">Login</a>
+  `);
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+// Register Page
+app.get("/register", (req, res) => {
+  res.send(`
+    <h1>Register</h1>
+
+    <form action="/api/auth/register" method="POST">
+
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="text"
+        name="gender"
+        placeholder="Gender"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="tel"
+        name="mobile"
+        placeholder="Mobile Number"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="text"
+        name="address"
+        placeholder="Address"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="text"
+        name="pincode"
+        placeholder="Pincode"
+        required
+      >
+
+      <br><br>
+
+      <button type="submit">Register</button>
+
+    </form>
+
+    <br>
+
+    <a href="/login">Already have an account? Login</a>
+  `);
 });
+
+
+// Login Page
+app.get("/login", (req, res) => {
+  res.send(`
+    <h1>Login</h1>
+
+    <form action="/api/auth/login" method="POST">
+
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+      >
+
+      <br><br>
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+      >
+
+      <br><br>
+
+      <button type="submit">Login</button>
+
+    </form>
+
+    <br>
+
+    <a href="/register">Don't have an account? Register</a>
+  `);
+});
+
+
+// Start Server
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log("Server running on port 3000");
+  });
+}
+
+module.exports = app;
